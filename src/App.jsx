@@ -1,7 +1,7 @@
+// App.jsx
 import { useState } from "react";
-import OperationButton from "./components/OperationButton";
-import ResetButton from "./components/ResetButton";
-import ResultButton from "./components/ResultButton";
+import GenericInput from "./components/GenericInput";
+import GenericButton from "./components/GenericButton";
 import Display from "./components/Display";
 import "./App.css";
 
@@ -11,6 +11,29 @@ export default function App() {
   const [num2, setNum2] = useState("");
   const [result, setResult] = useState("");
   const [operationCount, setOperationCount] = useState(0);
+
+  const operations = [
+    { 
+      symbol: "+", 
+      label: "Addition",
+      calculate: (a, b) => a + b
+    },
+    { 
+      symbol: "-", 
+      label: "Soustraction",
+      calculate: (a, b) => a - b
+    },
+    { 
+      symbol: "*", 
+      label: "Multiplication",
+      calculate: (a, b) => a * b
+    },
+    { 
+      symbol: "/", 
+      label: "Division",
+      calculate: (a, b) => a / b
+    }
+  ];
 
   const handleOperation = (op) => setOperator(op);
 
@@ -27,7 +50,6 @@ export default function App() {
       return;
     }
 
-    let res = 0;
     const a = parseFloat(num1);
     const b = parseFloat(num2);
 
@@ -36,16 +58,12 @@ export default function App() {
       return;
     }
 
-    switch (operator) {
-      case "+": res = a + b; break;
-      case "-": res = a - b; break;
-      case "*": res = a * b; break;
-      case "/": res = a / b; break;
-      default: res = a + b;
-    }
+    // Trouve l'opération dans le tableau
+    const currentOperation = operations.find(op => op.symbol === operator);
+    const res = currentOperation ? currentOperation.calculate(a, b) : operations[0].calculate(a, b);
     
-    setResult(Math.round(res * 100) / 100); // Arrondi à 2 décimales
-    setOperationCount((c) => c + 1);
+    setResult(Math.round(res * 100) / 100);
+    setOperationCount(prev => prev + 1);
   };
 
   return (
@@ -53,14 +71,14 @@ export default function App() {
       <h1>Calculatrice</h1>
       
       <div className="input-section">
-        <input
+        <GenericInput
           type="number"
           value={num1}
           placeholder="Premier nombre"
           onChange={(e) => setNum1(e.target.value)}
           className="number-input"
         />
-        <input
+        <GenericInput
           type="number"
           value={num2}
           placeholder="Deuxième nombre"
@@ -72,20 +90,33 @@ export default function App() {
       <div className="operation-section">
         <h3>Choisir l'opération:</h3>
         <div className="operation-buttons">
-          {["+", "-", "*", "/"].map((op) => (
-            <OperationButton 
-              key={op} 
-              symbol={op} 
-              onClick={handleOperation}
-              isActive={operator === op}
-            />
+          {operations.map(({ symbol, label }) => (
+            <GenericButton 
+              key={symbol}
+              variant="operation"
+              onClick={() => handleOperation(symbol)}
+              isActive={operator === symbol}
+              title={label}
+            >
+              {symbol}
+            </GenericButton>
           ))}
         </div>
       </div>
 
       <div className="action-buttons">
-        <ResultButton onClick={handleCalculate} />
-        <ResetButton onClick={handleReset} />
+        <GenericButton 
+          variant="result"
+          onClick={handleCalculate}
+        >
+          =
+        </GenericButton>
+        <GenericButton 
+          variant="reset"
+          onClick={handleReset}
+        >
+          Reset
+        </GenericButton>
       </div>
 
       <Display operator={operator} result={result} count={operationCount} />
