@@ -1,12 +1,11 @@
-
-export default function GenericButton({ 
+const GenericButton = ({ 
   children, 
   onClick, 
   className = "", 
   variant = "default",
   isActive = false,
   ...props 
-}) {
+}) => {
   const baseClass = "generic-button";
   const variantClass = `${baseClass}--${variant}`;
   const activeClass = isActive ? `${baseClass}--active` : "";
@@ -20,4 +19,6 @@ export default function GenericButton({
       {children}
     </button>
   );
-}
+};
+
+export default GenericButton;

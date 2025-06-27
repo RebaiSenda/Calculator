@@ -1,7 +1,6 @@
-// components/Display.jsx
 import DisplayItem from './DisplayItem';
 
-export default function Display({ operator, result, count }) {
+const Display = ({ operator, result, count }) => {
   const displayData = [
     {
       id: "operator",
@@ -36,4 +35,6 @@ export default function Display({ operator, result, count }) {
       ))}
     </div>
   );
-}
+};
+
+export default Display;
